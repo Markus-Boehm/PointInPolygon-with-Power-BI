@@ -1,0 +1,17 @@
+PointInPolygon = 
+VAR y = Points[lat] 
+VAR x = Points[lon]
+VAR Inside =  
+    ISODD(COUNTROWS(
+        CALCULATETABLE(polygon,
+            VAR x0 = polygon[x0]
+            VAR y0 = polygon[y0]
+            VAR x1 = polygon[x1]
+            VAR y1 = polygon[y1]
+            RETURN 
+                ((y1 > y && y >= y0) || (y0 > y && y >= y1))  
+                && 
+                (x < (x0-x1)*(y-y1)/(y0-y1) + x1)
+        )
+    ))
+RETURN IF(Inside,"Inside","Outside")
