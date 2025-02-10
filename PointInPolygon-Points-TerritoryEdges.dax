@@ -1,0 +1,17 @@
+Territory = 
+VAR y = Points[lat] 
+VAR x = Points[lon]
+VAR Inside = 
+    ISODD(COUNTROWS(
+        CALCULATETABLE(Territory,
+            VAR xA = Territory[A.lon]
+            VAR yA = Territory[A.lat]
+            VAR xB = Territory[B.lon]
+            VAR yB = Territory[B.lat]
+            RETURN 
+                ((yA < y && y <= yB) || (yB < y && y <= yA))  
+                && 
+                (x < (xB-xA)*(y-yA)/(yB-yA) + xA)
+        )
+    ))
+RETURN IF(Inside,"Inside","Outside")
