@@ -1,0 +1,20 @@
+Region = 
+VAR y = Points[lat] 
+VAR x = Points[lon]
+VAR Inside = 
+    FILTER(
+        VALUES(Region[region]),
+        ISODD(COUNTROWS(
+            CALCULATETABLE(Region,
+                VAR xA = Region[A.lon]
+                VAR yA = Region[A.lat]
+                VAR xB = Region[B.lon]
+                VAR yB = Region[B.lat]
+                RETURN 
+                    ((yA < y && y <= yB) || (yB < y && y <= yA))  
+                    && 
+                    (x < (xB-xA)*(y-yA)/(yB-yA) + xA)
+            )
+        ))
+    )
+RETURN COALESCE(Inside,"Other")
